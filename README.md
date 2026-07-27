@@ -88,5 +88,5 @@ Once training finishes, all outputs are consolidated in `outputs_ablation_market
 You can run all 6 stages in a single command:
 
 bash
-python run_progressive_ablation_market.py
+`python run_progressive_ablation_market.py`
 
