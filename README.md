@@ -82,3 +82,11 @@ Once training finishes, all outputs are consolidated in `outputs_ablation_market
 | `python run_progressive_ablation_market.py` | Run the complete 6-stage study. |
 | `python run_progressive_ablation_market.py --skip-training` | Re-aggregate existing result JSONs into a new table. |
 | `python run_progressive_ablation_market.py --device cuda:0` | Specify a target GPU device. |
+
+
+
+You can run all 6 stages in a single command:
+
+bash
+python run_progressive_ablation_market.py
+
