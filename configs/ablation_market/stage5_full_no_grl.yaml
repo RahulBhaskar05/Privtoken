@@ -1,0 +1,128 @@
+# Ablation Stage 5 — Full No-GRL Model (Identity Confusion via Entropy Maximization)
+# Script: train_entropy_confusion.py
+# Builds on Stage 4 (stage4_entropy_privacy) + identity confusion minimax.
+# This is the complete entropy-confusion pipeline, equivalent to the reference
+# config (v4_market1501_entropy_confusion.yaml).
+#
+# Single component added vs. Stage 4:
+#   + lambda_id_start: 0.01    (identity confusion via entropy maximization enabled)
+#   + lambda_id_max:   0.5
+#   + id_adversary_inner_steps: 2  (adversary trains 2 inner steps per batch)
+
+# Paths
+data_root: "./market1501"
+checkpoint_dir: "./checkpoints_ablation_market/stage5_full_no_grl"
+log_dir: "./logs_ablation_market/stage5_full_no_grl"
+output_dir: "./outputs_ablation_market/stage5_full_no_grl"
+
+# Dataset
+dataset: "market1501"
+num_classes: 751
+img_height: 256
+img_width: 128
+num_workers: 8
+
+# ===========================================================================
+# Model Architecture
+# ===========================================================================
+codebook_size: 4096                 # Doubled from v3 — more expressiveness for parts
+token_dim: 512
+vq_beta: 0.25                       # Match v3 proven value — 0.08 caused codebook collapse
+token_grid_h: 16
+token_grid_w: 8
+num_tokens: 128                     # = 16 * 8
+
+# Multi-granularity ReID head (adopted from PCB, Sun et al. ECCV 2018)
+num_parts: 4                        # 4 horizontal stripes of 4×8 tokens each
+
+# ===========================================================================
+# Training Schedule
+# ===========================================================================
+batch_size: 64                      # 4 images × 16 identities (PK sampling)
+num_instances: 4
+warmup_epochs: 30                   # Stage 1: ReID-only warmup
+adversarial_ramp_epochs: 50         # Stage 2: epochs 31–80
+total_epochs: 120                   # Stage 3 ends at epoch 120
+
+# ===========================================================================
+# Optimizers
+# ===========================================================================
+lr_main: 0.01                       # Lower base for cosine schedule (vs 0.035 in v3)
+lr_attacker: 0.0001                 # Adam lr for reconstruction attacker
+lr_id_adversary: 0.001              # Adam lr for identity adversary classifier
+lr_center: 0.5                      # SGD lr for center loss (standard practice)
+momentum: 0.9
+weight_decay: 0.0005
+
+# LR schedule: cosine annealing with warm restart at finetune stage
+lr_milestones: [30, 80]             # Decay at warmup-end and finetune-start
+lr_gamma: 0.1
+cosine_T_max: 40                    # Cosine period for stage 3
+
+# ===========================================================================
+# Loss Weights
+# ===========================================================================
+alpha_triplet: 1.0                  # Triplet weight in ReID loss
+triplet_margin: 0.3
+
+# Privacy adversarial — ramps from start to max over the adversarial stage
+lambda_priv_start: 0.005            # Reconstruction privacy (conservative start)
+lambda_priv_max: 0.05               # 10× max ceiling (vs 6× in v3)
+
+# Stage 5: identity confusion activated
+lambda_id_start: 0.01               # Lambda start for entropy maximization
+lambda_id_max: 0.5                  # Lambda max
+lambda_id_ramp_epochs: 40           # Ramp over 40 adversarial epochs
+
+# Center loss
+lambda_center: 0.005                # Raised 10x: center loss is now L2-normalized
+
+# Token noise regularization
+lambda_noise: 0.01                  # Pushes token distribution toward Gaussian
+
+# ===========================================================================
+# Adversarial Training Configuration
+# ===========================================================================
+attacker_inner_steps: 3             # Reconstruction attacker inner steps (same as Stage 4)
+id_adversary_inner_steps: 2         # Identity adversary inner steps (CHANGED: 1→2)
+use_entropy_privacy: true           # Entropy-guided weighting (same as Stage 4)
+use_region_privacy: false           # Disabled
+
+# Identity adversary architecture (GRL removed — plain MLP classifier)
+id_adversary_hidden: 1024           # 4× wider than v3's 256
+id_adversary_layers: 3              # Deeper: 3 layers vs 1 in v3
+id_adversary_dropout: 0.5
+
+# ===========================================================================
+# Failure-Mode Detection (Adversarial Collapse Safeguard)
+# ===========================================================================
+adversarial_collapse_threshold: 70.0
+max_collapse_recoveries: 3
+
+# ===========================================================================
+# Post-Hoc Attacker Evaluation
+# ===========================================================================
+posthoc_eval: true
+posthoc_attacker_epochs: 30
+posthoc_id_attacker_hidden: 2048
+posthoc_id_attacker_layers: 4
+
+# ===========================================================================
+# Privacy Evaluation
+# ===========================================================================
+eval_privacy: true
+eval_attackers:
+  - unet
+  - residual
+  - transformer
+  - feature_inversion
+  - identity
+
+# ===========================================================================
+# Evaluation & Checkpointing
+# ===========================================================================
+eval_every: 5
+save_every: 10
+
+# Reproducibility
+seed: 42

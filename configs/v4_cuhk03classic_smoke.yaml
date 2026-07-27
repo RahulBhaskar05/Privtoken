@@ -1,0 +1,49 @@
+# Smoke test config for CUHK03 Classic
+dataset_name: cuhk03_classic
+dataset_root: "./cuhk03"
+split_file: "splits_classic_labeled.json"
+images_dir: "images_labeled"
+
+checkpoint_dir: "./checkpoints_cuhk03_smoke"
+log_dir: "./logs_cuhk03_smoke"
+output_dir: "./outputs_cuhk03_smoke"
+
+num_classes: 1267
+img_height: 256
+img_width: 128
+num_workers: 0
+
+codebook_size: 4096
+token_dim: 512
+vq_beta: 0.10
+
+batch_size: 32
+num_instances: 4
+warmup_epochs: 1
+total_epochs: 1
+
+lr_main: 0.035
+lr_attacker: 0.0001
+momentum: 0.9
+weight_decay: 0.0005
+lr_milestones: [30, 55]
+lr_gamma: 0.1
+
+alpha_triplet: 1.0
+lambda_priv: 0.005
+triplet_margin: 0.3
+
+attacker_inner_steps: 1
+attacker_type: "unet"
+
+lambda_id: 0.01
+lr_id_attacker: 0.001
+use_region_privacy: true
+
+eval_privacy: false
+eval_attackers: []
+
+eval_every: 1
+save_every: 1
+
+seed: 42

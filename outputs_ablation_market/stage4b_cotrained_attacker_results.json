@@ -1,0 +1,24 @@
+{
+  "stage_id": "4b",
+  "stage_name": "cotrained_attacker",
+  "stage_label": "Stage 4b \u2014 Co-Trained U-Net Attacker",
+  "components_added": [
+    "Co-trained U-Net reconstruction attacker (attacker_inner_steps=3, lambda_priv enabled)"
+  ],
+  "rank1": 80.34441805225653,
+  "rank5": 92.25059382422803,
+  "rank10": 94.68527315914488,
+  "mAP": 60.35252182143239,
+  "mINP": 23.737889618441393,
+  "psnr": 14.307621690630913,
+  "ssim": 0.18296229656552895,
+  "lpips": 0.4059548638528213,
+  "pu_score": 81.01839268810383,
+  "posthoc_recon_psnr": 14.567617860436439,
+  "posthoc_recon_ssim": 0.22016258967729907,
+  "posthoc_id_top1": 94.87933168316832,
+  "collapse_count": 0,
+  "noise_scale": 0.0584212988615036,
+  "valid": true,
+  "collapse_flagged": false
+}

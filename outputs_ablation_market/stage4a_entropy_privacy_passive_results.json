@@ -1,0 +1,24 @@
+{
+  "stage_id": "4a",
+  "stage_name": "entropy_privacy_passive",
+  "stage_label": "Stage 4a \u2014 Entropy-Guided Privacy Weighting (passive attacker)",
+  "components_added": [
+    "Entropy-guided per-token privacy weighting (use_entropy_privacy=true, attacker passive)"
+  ],
+  "rank1": 80.81947743467933,
+  "rank5": 92.51781472684085,
+  "rank10": 95.04156769596199,
+  "mAP": 61.09965726723304,
+  "mINP": 24.456032494096576,
+  "psnr": 14.38614226281643,
+  "ssim": 0.1752473656204529,
+  "lpips": 0.4001831032335758,
+  "pu_score": 81.63897571621155,
+  "posthoc_recon_psnr": 14.699573668837548,
+  "posthoc_recon_ssim": 0.21864138204449166,
+  "posthoc_id_top1": 94.97215346534654,
+  "collapse_count": 0,
+  "noise_scale": 0.0583777129650116,
+  "valid": true,
+  "collapse_flagged": false
+}

@@ -1,0 +1,25 @@
+{
+  "stage_id": "4a",
+  "stage_name": "cotrained_attacker_region",
+  "stage_label": "Stage 4a \u2014 Co-Trained Attacker + Region-Weighted Loss",
+  "components_added": [
+    "Co-trained U-Net attacker with region-weighted reconstruction loss (lambda_priv_start=0.005, attacker_inner_steps=3, use_region_privacy=true)"
+  ],
+  "rank1": 80.64133016627079,
+  "rank5": 92.19121140142518,
+  "rank10": 95.04156769596199,
+  "mAP": 60.87382126807882,
+  "mINP": 24.50596554750103,
+  "psnr": 14.383825944364071,
+  "ssim": 0.19052346476819365,
+  "lpips": 0.40366970722097906,
+  "pu_score": 80.79420149696546,
+  "posthoc_recon_psnr": 14.626815053323904,
+  "posthoc_recon_ssim": 0.2174761225624631,
+  "posthoc_id_top1": 94.70915841584159,
+  "collapse_count": 0,
+  "noise_scale": 0.05842407047748566,
+  "valid": true,
+  "collapse_flagged": false,
+  "rerun_reason": null
+}

@@ -1,0 +1,124 @@
+# Ablation Stage 4 — Entropy-Guided Reconstruction Privacy
+# Script: train_entropy_confusion.py
+# Stage 3 + entropy-guided reconstruction privacy loss (lambda_priv ramped on).
+# The reconstruction attacker is continuously trained from epoch 1.
+# This stage isolates the effect of tokenizer-side reconstruction privacy pressure.
+#
+# Single component added vs. Stage 3:
+#   + lambda_priv_start: 0.005   (reconstruction privacy loss activated)
+#   + lambda_priv_max:   0.05
+#   + use_entropy_privacy: true   (entropy-guided privacy weighting enabled)
+#
+# Identity confusion remains disabled (activates in Stage 5).
+
+# Paths
+data_root: "./market1501"
+checkpoint_dir: "./checkpoints_ablation_market/stage4_entropy_privacy"
+log_dir: "./logs_ablation_market/stage4_entropy_privacy"
+output_dir: "./outputs_ablation_market/stage4_entropy_privacy"
+
+# Dataset
+dataset: "market1501"
+num_classes: 751
+img_height: 256
+img_width: 128
+num_workers: 8
+
+# ===========================================================================
+# Model Architecture
+# ===========================================================================
+codebook_size: 4096
+token_dim: 512
+vq_beta: 0.25
+token_grid_h: 16
+token_grid_w: 8
+num_tokens: 128
+num_parts: 4
+
+# ===========================================================================
+# Training Schedule
+# ===========================================================================
+batch_size: 64
+num_instances: 4
+warmup_epochs: 30
+adversarial_ramp_epochs: 50
+total_epochs: 120
+
+# ===========================================================================
+# Optimizers
+# ===========================================================================
+lr_main: 0.01
+lr_attacker: 0.0001
+lr_id_adversary: 0.001
+lr_center: 0.5
+momentum: 0.9
+weight_decay: 0.0005
+lr_milestones: [30, 80]
+lr_gamma: 0.1
+cosine_T_max: 40
+
+# ===========================================================================
+# Loss Weights
+# ===========================================================================
+alpha_triplet: 1.0
+triplet_margin: 0.3
+lambda_center: 0.005
+lambda_noise: 0.01
+
+# Stage 4: entropy-guided reconstruction privacy loss activated
+lambda_priv_start: 0.005
+lambda_priv_max: 0.05
+
+# Identity confusion disabled (Stage 5 activates this)
+lambda_id_start: 0.0
+lambda_id_max: 0.0
+lambda_id_ramp_epochs: 40
+
+# ===========================================================================
+# Adversarial Training Configuration
+# ===========================================================================
+attacker_inner_steps: 3            # Full inner loop — attacker continuously trained
+id_adversary_inner_steps: 1        # Passive — no identity confusion yet
+
+# Privacy weighting
+use_entropy_privacy: true          # Entropy-guided weighting enabled
+use_region_privacy: false          # Unused
+
+# Identity adversary architecture
+id_adversary_hidden: 1024
+id_adversary_layers: 3
+id_adversary_dropout: 0.5
+
+# ===========================================================================
+# Failure-Mode Detection
+# ===========================================================================
+adversarial_collapse_threshold: 70.0
+max_collapse_recoveries: 3
+
+# ===========================================================================
+# Post-Hoc Attacker Evaluation
+# ===========================================================================
+posthoc_eval: true
+posthoc_attacker_epochs: 30
+posthoc_id_attacker_hidden: 2048
+posthoc_id_attacker_layers: 4
+
+# ===========================================================================
+# Privacy Evaluation
+# ===========================================================================
+eval_privacy: true
+eval_attackers:
+  - unet
+  - residual
+  - transformer
+  - feature_inversion
+  - identity
+
+# ===========================================================================
+# Evaluation & Checkpointing
+# ===========================================================================
+eval_every: 5
+save_every: 10
+
+# Reproducibility
+seed: 42

@@ -1,0 +1,130 @@
+# Ablation Stage 1 — VQ-VAE Bottleneck (4096-entry codebook)
+# Script: train_entropy_confusion.py
+# Stage 0 + VQ tokenization (codebook_size: 4096, num_parts: 1).
+# All privacy losses disabled. Attacker and id-adversary run minimal
+# inner steps (1 each) but contribute zero gradient to the tokenizer
+# because lambda_priv and lambda_id are both 0.0.
+#
+# Changed vs. Stage 0:
+#   + Switches to train_entropy_confusion.py (PrivacyTokenizerV4 + MultiGranularityHead)
+#   + codebook_size: 4096  (pinned for entire ablation series)
+#   + num_parts: 1         (global branch only — PCB not yet activated)
+#   + attacker_inner_steps: 1      (minimum; privacy loss zeroed via lambda)
+#   + id_adversary_inner_steps: 1  (minimum; id confusion zeroed via lambda)
+#
+# All privacy components disabled:
+#   lambda_priv_start: 0.0, lambda_priv_max: 0.0
+#   lambda_id_start:   0.0, lambda_id_max:   0.0
+#   lambda_noise:      0.0
+#   use_entropy_privacy: false
+#   use_region_privacy:  false
+
+# Paths
+data_root: "./market1501"
+checkpoint_dir: "./checkpoints_ablation_market/stage1_vq_4096"
+log_dir: "./logs_ablation_market/stage1_vq_4096"
+output_dir: "./outputs_ablation_market/stage1_vq_4096"
+
+# Dataset
+dataset: "market1501"
+num_classes: 751
+img_height: 256
+img_width: 128
+num_workers: 8
+
+# ===========================================================================
+# Model Architecture
+# ===========================================================================
+codebook_size: 4096                 # Fixed for entire ablation series
+token_dim: 512
+vq_beta: 0.25
+token_grid_h: 16
+token_grid_w: 8
+num_tokens: 128
+
+# Stage 1: global branch only — PCB multi-granularity not yet activated
+num_parts: 1
+
+# ===========================================================================
+# Training Schedule
+# ===========================================================================
+batch_size: 64
+num_instances: 4
+warmup_epochs: 30
+adversarial_ramp_epochs: 50
+total_epochs: 120
+
+# ===========================================================================
+# Optimizers
+# ===========================================================================
+lr_main: 0.01
+lr_attacker: 0.0001
+lr_id_adversary: 0.001
+lr_center: 0.5
+momentum: 0.9
+weight_decay: 0.0005
+lr_milestones: [30, 80]
+lr_gamma: 0.1
+cosine_T_max: 40
+
+# ===========================================================================
+# Loss Weights
+# ===========================================================================
+alpha_triplet: 1.0
+triplet_margin: 0.3
+lambda_center: 0.005
+
+# Privacy components — ALL DISABLED for Stage 1
+lambda_priv_start: 0.0
+lambda_priv_max: 0.0
+lambda_id_start: 0.0
+lambda_id_max: 0.0
+lambda_id_ramp_epochs: 40
+lambda_noise: 0.0
+
+# ===========================================================================
+# Adversarial Training Configuration
+# ===========================================================================
+attacker_inner_steps: 1            # Minimum; no-op (lambda_priv=0.0)
+id_adversary_inner_steps: 1        # Minimum; no-op (lambda_id=0.0)
+use_region_privacy: false
+use_entropy_privacy: false
+
+# Identity adversary architecture
+id_adversary_hidden: 1024
+id_adversary_layers: 3
+id_adversary_dropout: 0.5
+
+# ===========================================================================
+# Failure-Mode Detection
+# ===========================================================================
+adversarial_collapse_threshold: 70.0
+max_collapse_recoveries: 3
+
+# ===========================================================================
+# Post-Hoc Attacker Evaluation
+# ===========================================================================
+posthoc_eval: true
+posthoc_attacker_epochs: 30
+posthoc_id_attacker_hidden: 2048
+posthoc_id_attacker_layers: 4
+
+# ===========================================================================
+# Privacy Evaluation
+# ===========================================================================
+eval_privacy: true
+eval_attackers:
+  - unet
+  - residual
+  - transformer
+  - feature_inversion
+  - identity
+
+# ===========================================================================
+# Evaluation & Checkpointing
+# ===========================================================================
+eval_every: 5
+save_every: 10
+
+# Reproducibility
+seed: 42

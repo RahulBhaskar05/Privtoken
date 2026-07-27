@@ -1,0 +1,24 @@
+{
+  "stage_id": "1",
+  "stage_name": "vq_4096",
+  "stage_label": "Stage 1 \u2014 VQ-VAE (4096)",
+  "components_added": [
+    "VQ-VAE bottleneck (codebook_size=4096)"
+  ],
+  "rank1": 82.57125890736341,
+  "rank5": 93.02256532066508,
+  "rank10": 95.72446555819477,
+  "mAP": 63.37574720995136,
+  "mINP": 25.620468959147086,
+  "psnr": 15.490310779213905,
+  "ssim": 0.24356212370330468,
+  "lpips": 0.37307111935224385,
+  "pu_score": 78.95586304607347,
+  "posthoc_recon_psnr": 15.793603494763374,
+  "posthoc_recon_ssim": 0.2733405953428398,
+  "posthoc_id_top1": 96.6197400990099,
+  "collapse_count": 0,
+  "noise_scale": 0.0583777129650116,
+  "valid": true,
+  "collapse_flagged": false
+}

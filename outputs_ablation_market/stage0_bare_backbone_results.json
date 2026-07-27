@@ -1,0 +1,26 @@
+{
+  "stage_id": "0",
+  "stage_name": "bare_backbone",
+  "stage_label": "Stage 0 \u2014 Bare Backbone",
+  "components_added": [
+    "ResNet-50 encoder",
+    "BNNeck global head",
+    "CE+Triplet losses"
+  ],
+  "rank1": 90.23159144893111,
+  "rank5": 96.82304038004752,
+  "rank10": 98.09976247030879,
+  "mAP": 72.75287904706664,
+  "mINP": null,
+  "psnr": null,
+  "ssim": null,
+  "lpips": null,
+  "pu_score": null,
+  "posthoc_recon_psnr": null,
+  "posthoc_recon_ssim": null,
+  "posthoc_id_top1": null,
+  "collapse_count": 0,
+  "noise_scale": null,
+  "valid": true,
+  "collapse_flagged": false
+}

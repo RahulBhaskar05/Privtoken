@@ -1,0 +1,52 @@
+# Ablation Stage 0 — Bare Backbone
+# Script: train_baseline.py
+# ResNet-50 + single global BNNeck head. No VQ, no privacy components.
+# This is the utility upper-bound / privacy lower-bound reference.
+#
+# Changed vs. reference (v4_market1501_entropy_confusion.yaml):
+#   - Uses train_baseline.py (not train_entropy_confusion.py)
+#   - baseline_mode: plain
+#   - No codebook, no adversarial losses, no noise
+#   - total_epochs matched to 120 for fair comparison
+#   - lr_milestones tuned to match 3-stage schedule milestones
+
+# Paths
+data_root: "./market1501"
+checkpoint_dir: "./checkpoints_ablation_market/stage0_bare_backbone"
+log_dir: "./logs_ablation_market/stage0_bare_backbone"
+output_dir: "./outputs_ablation_market/stage0_bare_backbone"
+
+# Dataset
+dataset: "market1501"
+num_classes: 751
+img_height: 256
+img_width: 128
+num_workers: 8
+
+# Model — plain ResNet-50, no VQ
+baseline_mode: "plain"
+token_dim: 512
+
+# Training
+batch_size: 64
+num_instances: 4
+total_epochs: 120
+warmup_epochs: 0           # no adversarial stage
+
+# Optimizers
+lr_main: 0.01
+momentum: 0.9
+weight_decay: 0.0005
+lr_milestones: [30, 80]    # matches entropy-confusion schedule milestones
+lr_gamma: 0.1
+
+# Loss weights
+alpha_triplet: 1.0
+triplet_margin: 0.3
+
+# Evaluation & Checkpointing
+eval_every: 5
+save_every: 10
+
+# Reproducibility
+seed: 42
